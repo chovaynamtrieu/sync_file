@@ -6,18 +6,29 @@
 #include <string>
 #include <QFileDialog>
 #include <QFile>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("Chương trình đồng bộ dữ liệu");
     server = new MyServer;
-    if (!server->listen(QHostAddress("127.0.0.103"), 23)){
+    if (!server->listen(QHostAddress("192.168.0.104"), 23)){
         qDebug() << "Failed to start server:" << server->errorString();
-        //ui->~MainWindow();
     }
     qDebug() << "Server started on IP" << server->serverAddress().toString() << "port" << server->serverPort();
+
+    // Create a timer with a 30 second interval
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &MainWindow::onTimerTimeout);
+
+    // Connect the push button's clicked() signal to start the timer
+    connect(ui->pushButton_syncFile, &QPushButton::clicked, this, [=](){
+        timer->start(30000); // start the timer after the first click
+    });
+    i = 0;
 }
 
 MainWindow::~MainWindow()
@@ -29,7 +40,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_selectFile_clicked()
 {
-    filePath = QFileDialog::getOpenFileName(this, tr("Open Text File"), QDir::homePath(), tr("Text Files (*.txt)"));
+    //filePath = QFileDialog::getOpenFileName(this, tr("Open Text File"), QDir::currentPath(), tr("Text Files (*.txt)"));
+    QFileDialog dialog(this, tr("Open Text File"), QDir::currentPath(), tr("Text Files (*.txt)"));
+    dialog.setDirectory("D:/New_folder_(5)/repository/New_folder/New_folder_(4)/viettel-high-tech/bai_tap");
+
+    filePath = dialog.getOpenFileName();
+
     if (!filePath.isEmpty()) {
         QFile file(filePath);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -46,37 +62,25 @@ void MainWindow::on_pushButton_selectFile_clicked()
 
 void MainWindow::on_pushButton_syncFile_clicked()
 {
-    //    std::ifstream file("D:\\New_folder_(5)\\repository\\New_folder\\New_folder_(4)\\viettel-high-tech\\bai_tap\\New Text Document.txt");
-    //    if (!file.is_open()) {
-    //        qDebug() << "Failed to open file";
-    //    }
-
-    //    std::stringstream buffer;
-    //    buffer << file.rdbuf();
-    //    std::string contents = buffer.str();
-    //    file.close();
-
-    //    QString data = ui->lineEdit_pathFile->text();
-
-
-    //    QByteArray response1 = contents.c_str();
-    //    QByteArray response2 = data.toUtf8();
-    //    //QByteArray response = QByteArray("hello world!");
-    //    server->sendResponse(response1);
-
     if (!filePath.isEmpty()) {
         QFile file(filePath);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
             in.setCodec("UTF-8");
             QString contents = in.readAll();
-            std::string contents2 = contents.toStdString();
-            QByteArray response1 = contents2.c_str();
+            QByteArray response1 = contents.toUtf8();
             server->sendResponse(response1);
             file.close();
+            i +=1;
+            qDebug() << "Send data:" << i;
         } else {
             qDebug() << "Failed to open file";
         }
     }
+}
+
+void MainWindow::onTimerTimeout()
+{
+    on_pushButton_syncFile_clicked();
 }
 

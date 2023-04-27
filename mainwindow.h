@@ -15,6 +15,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void onTimerTimeout();
 
 private slots:
     void on_pushButton_selectFile_clicked();
@@ -25,5 +26,6 @@ private:
     Ui::MainWindow *ui;
     MyServer *server;
     QString filePath;
+    int i; //so lan gui data
 };
 #endif // MAINWINDOW_H

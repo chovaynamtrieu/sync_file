@@ -11,12 +11,6 @@ void MyServer::incomingConnection(qintptr socketDescriptor){
     connect(socket, &QTcpSocket::readyRead, this, [socket]() {
         QByteArray data = socket->readAll();
         qDebug() << "Received data:" << data;
-
-        //socket->write(data);
-
-        // Send some additional data back to the client
-        // QByteArray response = QByteArray("Hello, client!");
-        // sendResponse(socket, response);
     });
 
     connect(socket, &QTcpSocket::disconnected, this, [socket]() {

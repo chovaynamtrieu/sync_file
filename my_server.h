@@ -6,7 +6,7 @@
 class MyServer : public QTcpServer
 {
 public:
-    explicit MyServer(QObject* parent = nullptr);// : QTcpServer(parent) {}
+    explicit MyServer(QObject* parent = nullptr);
     void sendResponse(const QByteArray& data);
 
 protected:
