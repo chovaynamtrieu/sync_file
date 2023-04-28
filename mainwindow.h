@@ -26,6 +26,9 @@ private:
     Ui::MainWindow *ui;
     MyServer *server;
     QString filePath;
+    QTimer *timer;
+    bool connectionEstablished;
+    QMetaObject::Connection *connection;
     int i; //so lan gui data
 };
 #endif // MAINWINDOW_H

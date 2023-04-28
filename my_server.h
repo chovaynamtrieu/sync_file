@@ -8,10 +8,18 @@ class MyServer : public QTcpServer
 public:
     explicit MyServer(QObject* parent = nullptr);
     void sendResponse(const QByteArray& data);
+    bool isClientConnected();
 
 protected:
     void incomingConnection(qintptr socketDescriptor) override;
-    QMap<int, QTcpSocket*> sockets;
+
+private slots:
+    void onReadyRead();
+    void onDisconnected();
+
+private:
+    QMap<qintptr, QTcpSocket*> sockets;
+
 };
 
 #endif // MYSERVER_H
