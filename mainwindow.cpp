@@ -84,8 +84,12 @@ void MainWindow::on_pushButton_syncFile_clicked()
                 QTextStream in(&file);
                 in.setCodec("UTF-8");
                 QString contents = in.readAll();
-                QByteArray response1 = contents.toUtf8();
-                server->sendResponse(response1);
+                QByteArray response2 = contents.toUtf8();
+                QString fileName = QFileInfo(filePath).fileName(); // get the name of the file
+                QByteArray response1 = fileName.toUtf8(); // convert the file name to a QByteArray
+                QByteArray separator = QByteArrayLiteral("\r\n"); // add a separator between the data and file name
+                QByteArray response = response1 + separator + response2; // combine the data and file name
+                server->sendResponse(response);
                 file.close();
                 i +=1;
                 qDebug() << "Send data:" << i;
