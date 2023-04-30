@@ -13,6 +13,9 @@ void MyServer::incomingConnection(qintptr socketDescriptor){
 
     // Add the new socket to the map
     sockets.insert(socketDescriptor, socket);
+
+    QString ipAddress = socket->peerAddress().toString();
+    qDebug() << "ip of the client: " << ipAddress;
 }
 
 void MyServer::onReadyRead()
