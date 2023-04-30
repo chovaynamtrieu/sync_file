@@ -128,15 +128,12 @@ void MainWindow::get_directory(){
         in.setCodec("UTF-8");
         contents = in.readAll();
         file.close();
-
-        // Parse a JSON string
         QJsonDocument doc = QJsonDocument::fromJson(contents.toUtf8());
-
         if (!doc.isNull()) {
             if (doc.isObject()) {
                 QJsonObject obj = doc.object();
-                host = obj["host"].toString();
-                port = obj["port"].toInt();
+//                host = obj["host"].toString();
+//                port = obj["port"].toInt();
                 directory = obj["directory"].toString();
                 qDebug() << "Host:" << host << " port:" << port << " directory:" << directory;
             }

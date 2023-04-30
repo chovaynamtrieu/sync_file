@@ -27,16 +27,20 @@ void MyServer::onReadyRead()
     }
 }
 
+// Remove all socket is UnconnectedState
 void MyServer::onDisconnected()
 {
-    QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
-    if (socket && sockets.contains(socket->socketDescriptor())) {
-        sockets.remove(socket->socketDescriptor());
-        socket->deleteLater();
-        qDebug() << "Client disconnected";
+    for (QMap<qintptr, QTcpSocket*>::iterator it = sockets.begin(); it != sockets.end();) {
+        if (it.value()->state() == QAbstractSocket::UnconnectedState) {
+            qDebug() << "Removing socket with descriptor" << it.key();
+            it = sockets.erase(it);
+        } else {
+            ++it;
+        }
     }
 }
 
+//Send data to all socket
 void MyServer::sendResponse(const QByteArray& data)
 {
     for (QTcpSocket* socket : sockets) {
