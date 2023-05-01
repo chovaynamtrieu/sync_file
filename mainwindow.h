@@ -31,15 +31,16 @@ private:
     Ui::MainWindow *ui;
 
     MyServer *server;
-    QString host;
-    int port;
+    QString host; // the IP address
+    int port;     // that stores the port number that the server should listen on
 
-    QString filePath;
-    QString directory;
+    QString filePath;  // the path to a file
+    QString directory; // This variable stores the path to the directory where the last selected file is located
 
-    QTimer *timer;
+
     bool connectionEstablished;
-    QMetaObject::Connection *connection;
-    int i; //so lan gui data
+    QMetaObject::Connection *connection; // connection to timer
+    QTimer *timer; // that is used to trigger events at regular intervals
+    int i;         // count the number of times data is sent
 };
 #endif // MAINWINDOW_H

@@ -1,9 +1,11 @@
 #include "my_server.h"
+#include <QDateTime>
 
 MyServer::MyServer(QObject* parent) : QTcpServer(parent){}
 
 void MyServer::incomingConnection(qintptr socketDescriptor){
-    qDebug() << "New client connected!";
+    QDateTime currentTime = QDateTime::currentDateTime();
+    qDebug() << "New client connected at " << currentTime.toString("yyyy-MM-dd hh:mm:ss") << "!";
 
     QTcpSocket* socket = new QTcpSocket(this);
     socket->setSocketDescriptor(socketDescriptor);
@@ -15,7 +17,7 @@ void MyServer::incomingConnection(qintptr socketDescriptor){
     sockets.insert(socketDescriptor, socket);
 
     QString ipAddress = socket->peerAddress().toString();
-    qDebug() << "ip of the client: " << ipAddress;
+    qDebug() << "The IP address of the client: " << ipAddress;
 }
 
 void MyServer::onReadyRead()
@@ -32,6 +34,7 @@ void MyServer::onDisconnected()
 {
     for (QMap<qintptr, QTcpSocket*>::iterator it = sockets.begin(); it != sockets.end();) {
         if (it.value()->state() == QAbstractSocket::UnconnectedState) {
+            qDebug() << "Client disconnected at " << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "!";
             qDebug() << "Removing socket with descriptor" << it.key();
             it = sockets.erase(it);
         } else {
@@ -58,6 +61,6 @@ bool MyServer::isClientConnected()
             return true;
         }
     }
-    qDebug() << "No Connection.";
+    qDebug() << "No clients are currently connected to the server!";
     return false;
 }

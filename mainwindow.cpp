@@ -11,6 +11,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QThread>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Create a MyServer
     get_directory();
     server = new MyServer;
-    host = "127.0.0.1";
+    host = "192.168.0.102";
     port = 1234;
     if (!server->listen(QHostAddress(host), port)){
         qDebug() << "Failed to start server:" << server->errorString();
@@ -33,15 +34,14 @@ MainWindow::MainWindow(QWidget *parent)
     // Create a timer with a 30 second interval
     timer = new QTimer(this);
     connection = new QMetaObject::Connection;
-    *connection = connect(timer, &QTimer::timeout, this, &MainWindow::onTimerTimeout);
+    connectionEstablished = false;
 
     // Connect the push button's clicked() signal to start the timer
     connect(ui->pushButton_syncFile, &QPushButton::clicked, this, [=](){
         timer->start(30000); // start the timer after the first click
     });
-    connectionEstablished = true;
 
-    //
+    //count the number of times data is sent
     i = 0;
 }
 
@@ -120,7 +120,6 @@ void MainWindow::onTimerTimeout()
 }
 
 void MainWindow::get_directory(){
-    //QFile file("D:\\New_folder_(5)\\repository\\New_folder\\New_folder_(4)\\viettel-high-tech\\bai_tap\\bai_tap\\history.txt");
     QFile file("history.txt");
     QString contents;
     if (file.open(QIODevice::ReadOnly)) {
@@ -132,10 +131,10 @@ void MainWindow::get_directory(){
         if (!doc.isNull()) {
             if (doc.isObject()) {
                 QJsonObject obj = doc.object();
-//                host = obj["host"].toString();
-//                port = obj["port"].toInt();
+                // host = obj["host"].toString();
+                // port = obj["port"].toInt();
                 directory = obj["directory"].toString();
-                qDebug() << "Host:" << host << " port:" << port << " directory:" << directory;
+                // qDebug() << "Host:" << host << " port:" << port << " directory:" << directory;
             }
         }
     }
