@@ -6,7 +6,7 @@
 
 3. MainWindow::on_pushButton_selectFile_clicked(): một phương thức slot được gọi khi người dùng bấm nút "Chọn tệp". Nó mở hộp thoại chọn tệp để chọn một tệp văn bản và hiển thị đường dẫn tệp đã chọn trong một ô văn bản.
 
-4. MainWindow::on_pushButton_syncFile_clicked(): một phương thức slot được gọi khi người dùng bấm nút "Đồng bộ hóa tệp". Nó kiểm tra xem một khách hàng có kết nối với máy chủ không và nếu có, gửi tệp đã chọn cho khách hàng. Phương thức cũng đếm số lần dữ liệu được gửi.
+4. MainWindow::on_pushButton_syncFile_clicked(): một phương thức slot được gọi khi người dùng bấm nút "Đồng bộ hóa tệp". Nó kiểm tra xem một khách hàng có kết nối với máy chủ không và nếu có, gửi tên tệp và dữ liệu đã chọn cho client. Phương thức cũng đếm số lần dữ liệu được gửi.
 
 5. MainWindow::onTimerTimeout(): một phương thức slot được gọi khi bộ đếm thời gian hết giờ. Nó gọi phương thức on_pushButton_syncFile_clicked() để đồng bộ hóa tệp.
 
